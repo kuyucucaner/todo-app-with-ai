@@ -13,7 +13,7 @@ const taskSchema = new mongoose.Schema({
   photos: { type: [String] , default: []},
   files: { type: [String] , default: []},
   tags: { type: [String] , default: [] },
-  recommendations: { type: [String] },
+  recommendation: { type: String , required: false },
 },  { timestamps: true } 
 );
 

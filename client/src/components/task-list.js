@@ -4,7 +4,7 @@ import { getTaskByUserId , deleteTask} from "../redux/slices/task-slice";
 import { useNavigate } from "react-router-dom";
 import { Table , Button , Input } from "antd";
 import dayjs from "dayjs";
-
+import '../styles/app.css';
 
 const TaskList = () => {
   const dispatch = useDispatch();
@@ -112,7 +112,10 @@ const TaskList = () => {
         rowKey="_id"
         expandable={{
           expandedRowRender: (record) => (
-            <p style={{ margin: 0 }}>{record.description}</p>
+            <div className="expanded-row-content">
+              Hint: {record.recommendation}
+            </div>
+          
           ),
           rowExpandable: (record) => record.title !== 'Not Expandable', // Eğer istenen şartı sağlıyorsa
         }}

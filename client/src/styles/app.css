@@ -8,4 +8,10 @@
     background-color: rgba(252, 240, 240, 0.425);
 }
 
+.expanded-row-content {
+    max-height: 150px; 
+    overflow-y: auto;
+    padding: 10px;
+    white-space: pre-wrap; 
+  }
   

@@ -1,5 +1,7 @@
 const TaskModel = require("../models/task-model");
 const UserModel = require("../models/user-model");
+const {getRecommendationForTask} = require('../middlewares/openai-middleware');
+
 const TaskController = {
   getAllTaskByUserId: async function (req, res) {
     const userId = req.user.id;
@@ -39,8 +41,9 @@ const TaskController = {
       res.status(500).json({ message: error.message });
     }
   },
-  createTask: async function (req, res) {
+  createTask: async function (req, res ) {
     const { title, description, completed, dueDate, tags } = req.body;
+    const recommendation= await getRecommendationForTask(description);
     const userAuthenticate = req.user.id;
     console.log("Task Req Body : ", req.body);
     console.log("User Authenticate : ", req.user.id);
@@ -55,6 +58,7 @@ const TaskController = {
         : [];
     console.log("Request Body:", req.body);
     console.log("Request Files:", req.files);
+
     const parsedTags = Array.isArray(tags) ? tags : JSON.parse(tags);
 
     try {
@@ -72,6 +76,7 @@ const TaskController = {
         tags : parsedTags,
         photos: photoPaths,
         files: filePaths,
+        recommendation : recommendation
       });
 
       console.log("New Task : ", newTask);
@@ -89,7 +94,8 @@ const TaskController = {
   updateTask: async function (req, res) {
     const { id } = req.params;
     const { title, description, completed, dueDate, tags } = req.body;
-
+    const recommendation = await getRecommendationForTask(description);  
+    console.log(recommendation);
     const photoPaths =
       req.files && req.files.photos
         ? req.files.photos.map((file) => file.path.replace(/\\/g, "/"))
@@ -111,6 +117,7 @@ const TaskController = {
       task.completed = completed || task.completed;
       task.dueDate = dueDate || task.dueDate;
       task.tags = parsedTags || task.tags;
+      task.recommendation = recommendation || task.recommendation
       if (photoPaths.length > 0) {
         let currentPhotos = task.photos || [];
         const maxPhotos = 5;
